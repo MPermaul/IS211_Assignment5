@@ -13,4 +13,6 @@ Application Details:
 
 4) There is an optional argement that can be passed in using "-s" and represents how many servers you want to use in the simulation.
 
-5) When a request is being processed by the server, the average wait time and how many tasks are still on the queue.
+5) When a request is being processed by the server, the average wait time and how many tasks are still on the queue will be displayed.
+
+6) The application is set to simulate 20,000 seconds for both single and multiple servers.
