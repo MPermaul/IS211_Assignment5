@@ -19,9 +19,9 @@ Application Details:
 
 	ex: python simulation.py http://s3.amazonaws.com/cuny-is211-spring2015/requests.csv 3
 	
-	server 1 will get the first request	(start of round robin sequence)
-	server 2 will get the next request
-	server 3 will get the next request	(end of round robin sequence)
-	server 1 will get the next request	(sequence starts over)
+	1) server 1 will get the first request	(start of round robin sequence)
+	2) server 2 will get the next request
+	3) server 3 will get the next request	(end of round robin sequence)
+	4) server 1 will get the next request	(sequence starts over)
 
 7) The application is set to simulate 20,000 seconds for both single and multiple servers.
