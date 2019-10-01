@@ -151,12 +151,13 @@ def simulateManyServers(csv_list, num_of_servers):
     server_queue = Queue()
     waiting_times = []
 
-    # variable for how many seconds the simulation runs for
-    num_of_seconds = 20000
-
     # loop to update servers list with the number of servers requested
     for num in range(num_of_servers):
         servers_list.append(Server())
+
+    # variable for how many seconds the simulation runs for, count for round robin method
+    num_of_seconds = 20000
+    count = 0
 
     # set a loop that increments through every second of the simulation
     for current_second in range(num_of_seconds):
@@ -167,17 +168,22 @@ def simulateManyServers(csv_list, num_of_servers):
                 request = Request(item)
                 server_queue.enqueue(request)
 
-            # loop that goes through the list of servers
-            for server in servers_list:
-                # check to see if server is busy and whether the queue is empty
-                if (not server.busy()) and (not server_queue.is_empty()):
-                    next_task = server_queue.dequeue()
-                    waiting_times.append(next_task.wait_time(current_second))
-                    server.start_next(next_task)
+            # check to see if server is busy and whether the queue is empty using round robin method
+            if (not servers_list[count].busy()) and (not server_queue.is_empty()):
+                next_task = server_queue.dequeue()
+                waiting_times.append(next_task.wait_time(current_second))
+                servers_list[count].start_next(next_task)
 
-                    # calculate average wait time and print out the average
-                    average_wait = sum(waiting_times) / len(waiting_times)
-                    print("Average Wait %6.2f secs %3d tasks remaining." % (average_wait, server_queue.size()))
+                # calculate average wait time and print out the average
+                average_wait = sum(waiting_times) / len(waiting_times)
+                print("Average Wait %6.2f secs %3d tasks remaining." % (average_wait, server_queue.size()))
+
+                # increment counter to use next server
+                count += 1
+
+                # check if counter is equal to number of servers and set back to 0 if True
+                if count == num_of_servers:
+                    count = 0
 
         # loop through the server list and run tick for each of them
         for server in servers_list:
@@ -190,9 +196,9 @@ def main():
     :return:
     """
     # initialize argument parser, add arguments, and then parse into script
-    parser = argparse.ArgumentParser(description='Script that downloads csv data from URL')
+    parser = argparse.ArgumentParser(description='Script that takes a URL with a csv file.')
     parser.add_argument('url', type=str, help='Url that contains a csv file.')
-    parser.add_argument('-s', '--servers', type=int, default=1, help='Number of servers to simulate')
+    parser.add_argument('servers', nargs='?', default=1, type=int, help='Number of servers to run simulation with.')
     args = parser.parse_args()
 
     # call downloadCSV function and pass in the url arg, print message to screen if there is an issue and exit
